@@ -95,13 +95,13 @@ async def wakeup(ctx, member: discord.Member, ):
     await member.move_to(saco2)
 
 #comandos de RPC
-@client.command()
+@client.command()   #Atualiza o status RPC do bot para Streamando
 async def rpc(ctx):
-    await client.change_presence(activity=discord.Streaming(name='Primeiro Discordbot do Mergrow!', url='https://www.twitch.tv/mergrow_', status=discord.Status.idle))
+    await client.change_presence(activity=discord.Streaming(name='Primeiro Discordbot do Mergrow!', url='https://www.twitch.tv/mergrow_', status=discord.Status.idle)) 
 
 @client.command()
 async def rpc2(ctx):
-    await client.change_presence(activity=discord.Game(name='Primeiro Discordbot do Mergrow!', status=discord.Status.idle))
+    await client.change_presence(activity=discord.Game(name='Primeiro Discordbot do Mergrow!', status=discord.Status.idle)) #Atualiza o status para Jogando
 
     
 client.run(bot_token) #starta o bot usando o token.
