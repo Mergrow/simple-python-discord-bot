@@ -1,44 +1,56 @@
 import discord
 import time
+from ruamel.yaml import YAML
 from discord.ext import commands
+import os
+from datetime import timezone
 
 
+yaml = YAML()
+with open("./config.yml", "r", encoding='utf-8') as file: #config.yml
+    config = yaml.load(file)
 
-bot_token= '' #Token do bot
+ver = ['0.0.1.3', '13/08/2021'] #versão atual do bot.
+bot_token = os.getenv('DISCORD_TOKEN') #Token do bot
 
-client = commands.Bot(command_prefix='$', intents=discord.Intents.all()) #Definindo a variavel client, tendo como argumento o prefixo do comando.
-                                                                         #Intents são as permissoes do bot para capturar e armazenar a presença dos usuários.
+Prefix = config['Prefix']
+client = commands.Bot(command_prefix=config['Prefix'], intents=discord.Intents.all()) #Definindo a variavel client, tendo como argumento o prefixo do comando.
+                                                                                      #Intents são as permissoes do bot para capturar e armazenar a presença dos usuários.
+
+
 @client.event               #evento no inicio do bot
 async def on_ready():
 
-    print("Bot esta funcionando!" .format(client)) #log no console, para saber se o bot foi iniciado corretamente!
-    print('Logado como {0.user}'  .format(client)) 
+    print("Bot esta funcionando! " .format(client)) #log no console, para saber se o bot foi iniciado corretamente!
+    print('Logado como {0.user} '  .format(client)) 
+    print(f'Hoje é: ' + time.strftime("%d/%m/%Y %H:%M:%S") .format(client)) 
+    print(f'Versão atual: {ver}\n '  .format(client)) 
     await client.change_presence(activity=discord.Game(name="Primeiro Discordbot do Mergrow!")) # Atualiza o RPC do discordbot
 
-ownerid = '<@337651715677618176>' #Meu UID pessoal do discord
+ownerid = 337651715677618176 #DiscordID do desenvolvedor 
 
 @client.event                           #captura de mensagens nos canais de texto
 async def on_message(message): 
     if message.author == client.user:
      return
-  
+
     username = str(message.author) # autor da mensagem
     usermention = str(message.author.mention) #menção do autor da mensagem
     user_message = str(message.content) # conteúdo da mensagem
     channel = str(message.channel.name) # nome do canal em que a mensagem foi enviada.
-    print(f'{channel} | {username}: {user_message} ') #Log da mensagem do usuário!
+    print(f'[' + time.strftime("%d/%m/%Y %H:%M:%S")+ ']'f'|({channel})| {username}: {user_message} ') #Log da mensagem do usuário!
+
 
  #----------------------------COMANDOS DISCORD---------------------------------# 
-    if user_message.lower() == '$salve':                        
+    if user_message.lower() == config['Prefix'] +'salve':                        
         await message.channel.send(f'Salve {usermention}')
 
-    elif user_message.lower() == '$dev':
-        await message.channel.send (f'**Meu desenvolverdor é o: **' + (ownerid))
+    elif user_message.lower() == config['Prefix'] +'dev':
+        await message.channel.send (f'**Meu desenvolverdor é o: **' '<@' + str(ownerid) +'>')
 
-    elif user_message.lower() == '$linguagem':
+    elif user_message.lower() == config['Prefix'] +'linguagem':
         await message.channel.send ('Escrito em Python v3.9.6!')
 
-    
     else:
         await client.process_commands(message)  #Se as mensagens acima nao forem registrados, ele irá procurar por comandos abaixo!
 
@@ -56,10 +68,11 @@ async def move(ctx, member: discord.Member, *, channel_name):
     if channel is None:
         return await ctx.send('Canal inválido!') #retorna a mensagem de canal inválido caso o canal não seja encontrado.
     
-    # mover o usuario
+    # move o usuario
     await member.move_to(channel)
 
-@client.command(aliases=['stream','live'])
+
+@client.command(aliases=['stream','live']) #Exemplo uso de aliases
 async def twitch(message):
     usermention = str(message.author.mention)
     await message.send(f'{usermention} **Siga minha stream: https://www.twitch.tv/mergrow_ !**')
@@ -69,39 +82,66 @@ async def padilla(ctx):
     await ctx.send('*SimSim*')
 
 #Wakeup move o usuário entre dois canais.
-@client.command()
-async def wakeup(ctx, member: discord.Member, ):
+@client.command(aliases=['saco'])
+async def wakeup(ctx, member: discord.Member, channel1, channel2 ):
+    
     if member.voice is None:
         return await ctx.send('O usuário precisa estar um canal de voz!')
-    if member is ownerid:
+    if member._user.id == ownerid:
         return await ctx.send('Meu mestre não pode ser acordado! ')
-    saco1 = client.get_channel(683512951650779206) #define o id dos canais do wakeup (saco1)
-    saco2 = client.get_channel(683512913130029058) #define o id dos canais do wakeup (saco2)
+
+    channel1 = client.get_channel(int(channel1)) #converte o valor string para inteiro e define o id dos canais do wakup (channel1)
+    channel2 = client.get_channel(int(channel2)) #converte o valor string para inteiro e define o id dos canais do wakup (channel2)
+
+    channel_return = client.get_channel(member.voice.channel.id) #obtem o canal origem do usuário alvo, então converte para dado tipo ID.
     await ctx.send(f'{member} ACORDA!!!!')
-    await member.move_to(saco1) #move o usuário entre os carais saco1 e saco2
+    await member.move_to(channel1) #move o usuário entre os carais channel1 e channel2
     time.sleep(0.1)
-    await member.move_to(saco2)
+    await member.move_to(channel2)
     time.sleep(0.1)
-    await member.move_to(saco1)
+    await member.move_to(channel1)
     time.sleep(0.1)
-    await member.move_to(saco2)
+    await member.move_to(channel2)
     time.sleep(0.1)
-    await member.move_to(saco1)
+    await member.move_to(channel1)
     time.sleep(0.1)
-    await member.move_to(saco2)
+    await member.move_to(channel2)
     time.sleep(0.1)
-    await member.move_to(saco1)
+    await member.move_to(channel1)
     time.sleep(0.1)
-    await member.move_to(saco2)
+    await member.move_to(channel2)
+    time.sleep(0.1)
+    await member.move_to(channel_return) #volta para o canal origem.
+
+
+@wakeup.error #checa se não estão faltando argumentos no comando wakeup
+async def wakeup_error(ctx, error):
+        if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+            await ctx.send(f'** Argumento inválido! utilize {Prefix}wakeup @usuário Canal.ID1 Canal.ID2**')
+
 
 #comandos de RPC
-@client.command()   #Atualiza o status RPC do bot para Streamando
-async def rpc(ctx):
-    await client.change_presence(activity=discord.Streaming(name='Primeiro Discordbot do Mergrow!', url='https://www.twitch.tv/mergrow_', status=discord.Status.idle)) 
-
+@client.command()
+async def rpc1(ctx):
+    if ctx.author.id == ownerid:
+        await ctx.send('Status RPC atualizado para **Transmitindo** com sucesso!',  delete_after=1)
+        await client.change_presence(activity=discord.Streaming(name='Primeiro Discordbot do Mergrow!', url='https://www.twitch.tv/mergrow_', status=discord.Status.idle))
+        time.sleep(3)
+        await ctx.message.delete()
+    else: return await ctx.send('Você não tem permissão para executar este comando!')
 @client.command()
 async def rpc2(ctx):
-    await client.change_presence(activity=discord.Game(name='Primeiro Discordbot do Mergrow!', status=discord.Status.idle)) #Atualiza o status para Jogando
+    if ctx.author.id == ownerid:
+        await ctx.send('Status RPC atualizado para **Jogando** com sucesso!', delete_after=1)
+        await client.change_presence(activity=discord.Game(name='Primeiro Discordbot do Mergrow!', status=discord.Status.idle))
+        time.sleep(3)
+        await ctx.message.delete()
+    else: return await ctx.send('Você não tem permissão para executar este comando!')
 
-    
+@client.command(aliases=['versão','ver'])
+async def version(message):
+    await message.send(f'```Versão: {ver}```')
+
+
+
 client.run(bot_token) #starta o bot usando o token.
