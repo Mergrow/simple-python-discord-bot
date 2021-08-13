@@ -1,4 +1,4 @@
-# my first discord bot ever in python!
+# Meu primeiro discord bot em python!
 
 
-It has simple message commands and a cool wakeup command, that move around the channels and make a lot of noise!
+Possui comandos bem simples de mensagem e também um comando "wakeup" que move um usuário entre os canais de voz fazendo bastante barulho!
