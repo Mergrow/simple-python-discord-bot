@@ -2,14 +2,12 @@ import discord
 import time
 from discord.ext import commands
 
+
+
 bot_token= '' #Token do bot
-
-
 
 client = commands.Bot(command_prefix='$', intents=discord.Intents.all()) #Definindo a variavel client, tendo como argumento o prefixo do comando.
                                                                          #Intents são as permissoes do bot para capturar e armazenar a presença dos usuários.
-
-
 @client.event               #evento no inicio do bot
 async def on_ready():
 
@@ -17,15 +15,13 @@ async def on_ready():
     print('Logado como {0.user}'  .format(client)) 
     await client.change_presence(activity=discord.Game(name="Primeiro Discordbot do Mergrow!")) # Atualiza o RPC do discordbot
 
-
-
-ownerid = '<@337651715677618176>' #My UID
+ownerid = '<@337651715677618176>' #Meu UID pessoal do discord
 
 @client.event                           #captura de mensagens nos canais de texto
 async def on_message(message): 
     if message.author == client.user:
      return
-
+  
     username = str(message.author) # autor da mensagem
     usermention = str(message.author.mention) #menção do autor da mensagem
     user_message = str(message.content) # conteúdo da mensagem
@@ -63,17 +59,14 @@ async def move(ctx, member: discord.Member, *, channel_name):
     # mover o usuario
     await member.move_to(channel)
 
-
 @client.command(aliases=['stream','live'])
 async def twitch(message):
     usermention = str(message.author.mention)
     await message.send(f'{usermention} **Siga minha stream: https://www.twitch.tv/mergrow_ !**')
 
-
 @client.command()
 async def padilla(ctx):
     await ctx.send('*SimSim*')
-
 
 #Wakeup move o usuário entre dois canais.
 @client.command()
@@ -106,10 +99,9 @@ async def wakeup(ctx, member: discord.Member, ):
 async def rpc(ctx):
     await client.change_presence(activity=discord.Streaming(name='Primeiro Discordbot do Mergrow!', url='https://www.twitch.tv/mergrow_', status=discord.Status.idle))
 
-
 @client.command()
 async def rpc2(ctx):
     await client.change_presence(activity=discord.Game(name='Primeiro Discordbot do Mergrow!', status=discord.Status.idle))
 
-
+    
 client.run(bot_token) #starta o bot usando o token.
