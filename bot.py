@@ -19,7 +19,7 @@ async def on_ready():
 
 
 
-ownerid = '<@337651715677618176>'
+ownerid = '<@337651715677618176>' #My UID
 
 @client.event                           #captura de mensagens nos canais de texto
 async def on_message(message): 
@@ -77,13 +77,13 @@ async def padilla(ctx):
 
 #Wakeup move o usuário entre dois canais.
 @client.command()
-async def saco(ctx, member: discord.Member, ):
+async def wakeup(ctx, member: discord.Member, ):
     if member.voice is None:
         return await ctx.send('O usuário precisa estar um canal de voz!')
     if member is ownerid:
         return await ctx.send('Meu mestre não pode ser acordado! ')
-    saco1 = client.get_channel(683512951650779206) #define o id dos canais do saco (saco1)
-    saco2 = client.get_channel(683512913130029058) #define o id dos canais do saco (saco2)
+    saco1 = client.get_channel(683512951650779206) #define o id dos canais do wakeup (saco1)
+    saco2 = client.get_channel(683512913130029058) #define o id dos canais do wakeup (saco2)
     await ctx.send(f'{member} ACORDA!!!!')
     await member.move_to(saco1) #move o usuário entre os carais saco1 e saco2
     time.sleep(0.1)
