@@ -1,6 +1,7 @@
 import discord
 import time
 from discord.abc import GuildChannel
+from discord.ext.commands.core import has_role
 from discord.member import Member
 from ruamel.yaml import YAML
 from discord.ext import commands
@@ -85,8 +86,8 @@ async def padilla(ctx):
 
 #Wakeup move o usuário entre dois canais.
 @client.command(aliases=['saco'])
+@commands.has_role('woken')
 async def wakeup(ctx, member: discord.Member, channel1, channel2 ):
-    
     if member.voice is None:
         return await ctx.send('O usuário precisa estar um canal de voz!')
     if member._user.id == ownerid:
@@ -127,6 +128,12 @@ async def wakeup_error(ctx, error):
         if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
             await ctx.send(f'** Argumento inválido! utilize {Prefix}wakeup @usuário Canal.ID1 Canal.ID2**')
 
+@wakeup.error #checa se o usuário possui a role woken necessária para utilizar o comando wakeup!
+async def woken_missing_role(ctx, error):
+    if isinstance(error, discord.ext.commands.errors.MissingRole):
+        await ctx.send('❌ É necessário ter a role **woken** para utilizar o wakeup!❌')
+
+
 
 #comandos de RPC
 @client.command()
@@ -149,6 +156,10 @@ async def rpc2(ctx):
 @client.command(aliases=['versão','ver'])
 async def version(message):
     await message.send(f'```Versão: {ver}```')
+
+
+
+
 
 
 client.run(bot_token)
